@@ -1,4 +1,5 @@
 import random
+
 quotes = ( "It's just a flesh wound.", 
 "He's not the messiah. He's a very naughty boy!", 
 "This is an ex-parrot!!")
