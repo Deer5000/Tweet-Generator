@@ -1,69 +1,168 @@
-from _future_ import division, print_function
+class Node(object):
 
-class listo(list):
+    def __init__(self, data):
+        """Initialize this node with the given data."""
+        self.data = data
+        self.next = None
 
-    def __init__(self, word_list= None):
-        super(listo, self).__init__()
-        self.type = 0
-        self.token = 0
-        if word_list != None:
-            for word in word_list:
-                self.add_count(word)
+    def __repr__(self):
+        """Return a string representation of this node."""
+        return 'Node({!r})'.format(self.data)
 
-    def add_count(self, word, count=1):
-        self. tokens += count
-        if item [0] == word:
-            item[1] += count
+
+class LinkedList(object):
+
+    def __init__(self, items=None):
+        """Initialize this linked list and append the given items, if any."""
+        self.head = None  # First node
+        self.tail = None  # Last node
+        self.count = 0
+        # Append given items
+        if items is not None:
+            for item in items:
+                self.append(item)
+
+    def __str__(self):
+        """Return a formatted string representation of this linked list."""
+        items = ['({!r})'.format(item) for item in self.items()]
+        return '[{}]'.format(' -> '.join(items))
+
+    def __repr__(self):
+        """Return a string representation of this linked list."""
+        return 'LinkedList({!r})'.format(self.items())
+
+    def items(self):
+        """Return a list (dynamic array) of all items in this linked list.
+        Best and worst case running time: O(n) for n items in the list (length)
+        because we always need to loop through all n nodes to get each item."""
+        items = []  # O(1) time to create empty list
+        # Start at head node
+        node = self.head  # O(1) time to assign new variable
+        # Loop until node is None, which is one node too far past tail
+        while node is not None:  # Always n iterations because no early return
+            items.append(node.data)  # O(1) time (on average) to append to list
+            # Skip to next node to advance forward in linked list
+            node = node.next  # O(1) time to reassign variable
+        # Now list contains items from all nodes
+        return items  # O(1) time to return list
+
+    def is_empty(self):
+        """Return a boolean indicating whether this linked list is empty."""
+        return self.head is None
+
+    def length(self):
+        """ Return count for the length of the linked list."""
+        return self.count
+
+    def append(self, item):
+        """Insert the given item at the tail of this linked list.
+         Running time: O(1) under any circumstances because you add new node after the tail."""
+        #  Create new node to hold given item
+        #  Append node after tail, if it exists
+        new_node = Node(item)
+        if self.head is None:
+            self.head = new_node
+            self.tail = new_node
         else:
-            self. append([word, count])
-            self.type += count
+            current_node = self.tail
+            current_node.next = new_node
+            self.tail = current_node.next
 
-    def freq(self, word:
-        for item in self:
-            if item[0] == word:
-                return item[1])
-            else:
-                return 0
+        self.count += 1
 
-    def _contains_(self, word):
-        for item in self:
-            if item[0] == word:
-                return True
-            else:
-                return None
-
-    def _index(self, target):
-
-        for index, word in enumerate(self):
-            if word [0] == target:
-                return index
-            else:
-                return random_index
-
-
-    def print_histo(word_list):
-        print("word list: {}'.format(histo))
-
-        histo = listo(word_list)
-        print('listogram:{}'.format(histo))
-        print('{} tokens, {} tupes'.format(histo.type))
-        for word in word_list[-2:]:
-            freq = histo.freq(word)
-            print('{'r}' occurs {} times'.format(word, freq))
-        print()
-        return
-
-    def main():
-        import sys
-        arguments = sys.argv[1:]
-        if len(arguemnts) >= 1:
-            print_histo(arguemnts)
+    def prepend(self, item):
+        """Insert the given item at the head of this linked list.
+         Running time: O(1) because you add new item at the beginning of the list"""
+        #  Create new node to hold given item
+        #  Prepend node before head, if it exists
+        new_node = Node(item)
+        if self.head is None:
+            self.head = new_node
+            self.tail = new_node
         else:
-            word = 'abracadabra'
-            print_histo(list(word))
+            new_node.next = self.head
+            self.head = new_node
 
-        fish_text = "one fish two fish red fish blue fish"
-        print_function(fish_text.split())
+        self.count += 1
 
-        if __main__ == '__main__':
-            main()
+    def find(self, quality):
+        """Return an item from this linked list satisfying the given quality.
+         Best case running time: O(1) when first item satisfies the given quality
+         Worst case running time: O(n) because you have to traverse through all nodes when the last item satisfiesthe given quality or there is no item"""
+        #  Loop through all nodes to find item where quality(item) is True
+        #  Check if node's data satisfies given quality function
+        current_node = self.head
+        while current_node is not None:
+            if quality(current_node.data):
+                return current_node.data
+            current_node = current_node.next
+        return None
+
+    def delete(self, item):
+        """Delete the given item from this linked list, or raise ValueError.
+         Best case running time: O(1) when given item is equal to the head.
+         Worst case running time: O(n) when given item is equal to the tail or there is no item in list"""
+        #  Loop through all nodes to find one whose data matches given item
+        #  Update previous node to skip around node with matching data
+        #  Otherwise raise error to tell user that delete has failed
+        # Hint: raise ValueError('Item not found: {}'.format(item))
+        list_len_1 = self.length()
+        current_node = self.head
+        previous_node = None
+        while current_node is not None:
+            if current_node.data == item:
+                self.count -= 1
+                if previous_node is not None:
+                    previous_node.next = current_node.next
+                    if self.tail.data == item:
+                        self.tail = previous_node
+
+                else:
+                    # if it's the only node in list
+                    if current_node.next is None:
+                        self.tail = None
+                        self.head = None
+                        break
+                    # if it's the first node in list
+                    else:
+                        self.head = current_node.next
+                        current_node = self.head
+
+            previous_node = current_node
+            current_node = current_node.next
+
+        list_len_2 = self.length()
+        # no item has been deleted
+        if list_len_1 == list_len_2:
+            raise ValueError('Item not found: {}'.format(item))
+
+def test_linked_list():
+    ll = LinkedList()
+    print('list: {}'.format(ll))
+
+    print('\nTesting append:')
+    for item in ['A', 'B', 'C']:
+        print('append({!r})'.format(item))
+        ll.append(item)
+        print('list: {}'.format(ll))
+
+    print('head: {}'.format(ll.head))
+    print('tail: {}'.format(ll.tail))
+    print('length: {}'.format(ll.length()))
+
+    # Enable this after implementing delete method
+    delete_implemented = False
+    if delete_implemented:
+        print('\nTesting delete:')
+        for item in ['B', 'C', 'A']:
+            print('delete({!r})'.format(item))
+            ll.delete(item)
+            print('list: {}'.format(ll))
+
+        print('head: {}'.format(ll.head))
+        print('tail: {}'.format(ll.tail))
+        print('length: {}'.format(ll.length()))
+
+
+if __name__ == '__main__':
+    test_linked_list()
