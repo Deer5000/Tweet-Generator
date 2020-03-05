@@ -1,12 +1,26 @@
-from random import random, randint
 import sys
+from random import random, randint
 
-my_file = open("/Users/khidrbrinkley/Desktop/dev/courses/cs1.2/repos/gitclass/tweet_gen/words.txt")
-lines = my_file.readlines()
+file = open("words.txt", "r")
 
-for random_index in lines:
-    random_index = randint(0, len(lines)-1)
-    rand_item = lines[random_index]
-    print(rand_item)
+lines = file.readlines()
 
-my_file.close()
+def dict_words():
+    words_dictionary = {}
+
+    for line in lines:
+        words = line.rstrip('\n').split()
+        for word in words:
+            if word in words_dictionary.keys():
+                words_dictionary[word] += 1
+            else:
+                words_dictionary[word] = 1
+
+
+    return words_dictionary
+
+
+
+
+if __name__ == '__main__':
+    print(dict_words())
